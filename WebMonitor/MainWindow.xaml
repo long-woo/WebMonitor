@@ -10,12 +10,11 @@
 
     <Window.CommandBindings>
         <CommandBinding Command="Open" CanExecute="Open_CanExecute" Executed="Open_Executed"/>
-        <CommandBinding Command="Copy" CanExecute="Copy_CanExecute" Executed="Copy_Executed"/>
     </Window.CommandBindings>
-    
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
@@ -25,17 +24,17 @@
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
-        <Label Content="web目录：" VerticalContentAlignment="Center"/>
-        <TextBox Grid.Column="1" IsReadOnly="True" Name="txtWebPath" Controls:TextBoxHelper.Watermark="双击选择web目录" VerticalContentAlignment="Center" MouseDoubleClick="txtWebPath_MouseDoubleClick"/>
-        <CheckBox Grid.Column="2" Content="监控子目录" IsChecked="True" Margin="5"/>
-        <Button Grid.Column="3" Content="开始监控" Name="btnTask" Style="{DynamicResource AccentedSquareButtonStyle}" Click="btnTask_Click"/>
+        <Label Content="web目录：" VerticalContentAlignment="Center" Height="30"/>
+        <TextBox Grid.Column="1" IsReadOnly="True" Name="txtWebPath" Height="30" Controls:TextBoxHelper.Watermark="双击选择web目录" VerticalContentAlignment="Center" MouseDoubleClick="txtWebPath_MouseDoubleClick"/>
+        <CheckBox Grid.Column="2" Content="监控子目录" IsChecked="True" Height="30" Margin="5" Name="chkMonitorChild"/>
+        <Button Grid.Column="3" Content="开始监控" Name="btnTask" Height="30" Margin="5,0" Style="{DynamicResource AccentedSquareButtonStyle}" Click="btnTask_Click"/>
         <DataGrid Grid.Row="1" Grid.ColumnSpan="4" Name="dgMonitor" IsReadOnly="True" AutoGenerateColumns="False" LoadingRow="dgMonitor_LoadingRow">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="序号" Binding="{Binding ItemNo}" Width="80"/>
                 <DataGridTextColumn Header="文件名" Binding="{Binding FileName}" Width="100"/>
                 <DataGridTextColumn Header="位置" Binding="{Binding FilePath}" Width="*"/>
                 <DataGridTextColumn Header="动作" Binding="{Binding Operate}" Width="60"/>
-                <DataGridTextColumn Header="日期" Binding="{Binding OperaDate}" Width="120"/>
+                <DataGridTextColumn Header="日期" Binding="{Binding OperaDate}" Width="130"/>
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu>
@@ -45,5 +44,28 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>
+
+        <Controls:MetroProgressBar Grid.Row="2" Grid.ColumnSpan="4" Margin="0,-29,0,0" IsIndeterminate="True" Name="mpbStatus" Visibility="Hidden"/>
+
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="4" Background="#eee">
+            <StatusBarItem>
+                <CheckBox Content="创建" Foreground="Green"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <CheckBox Content="修改" Foreground="Orange"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <CheckBox Content="删除" Foreground="Red"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <CheckBox Content="重命名"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right" Foreground="BlueViolet">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="监控时长："/>
+                    <TextBlock Name="siMonitorTime" Text="0小时0分钟0秒"/>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Controls:MetroWindow>

@@ -2,6 +2,7 @@
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace WebMonitor
 {
@@ -18,6 +20,9 @@ namespace WebMonitor
     public partial class MainWindow : MetroWindow
     {
         private int itemNo = 1;
+        private FileSystemWatcher fileWatcher = new FileSystemWatcher();
+        private DispatcherTimer disTimer = new DispatcherTimer();
+        private int totalSecond = 0;
 
         public MainWindow()
         {
@@ -27,6 +32,21 @@ namespace WebMonitor
             MetroDialogOptions.AffirmativeButtonText = "确定";
             MetroDialogOptions.NegativeButtonText = "取消";
             MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Accented;
+
+            // 监控时长
+            disTimer.Interval = TimeSpan.FromMilliseconds(1000);
+            disTimer.Tick += DisTimer_Tick;
+            disTimer.Start();
+        }
+
+        private void DisTimer_Tick(object sender, EventArgs e)
+        {
+            totalSecond++;
+
+            int hour = totalSecond / 3600,
+                minute = (totalSecond % 3600) / 60,
+                second = (totalSecond % 3600) % 60;
+            siMonitorTime.Text = string.Format("{0}小时{1}分钟{2}秒", hour, minute, second);
         }
 
         #region 事件
@@ -57,6 +77,28 @@ namespace WebMonitor
                 return;
             }
 
+            switch (btnTask.Content.ToString())
+            {
+                case "开始监控":
+                    await OperateMonitor(txtWebPath.Text, (bool)chkMonitorChild.IsChecked);
+                    btnTask.Content = "停止监控";
+                    txtWebPath.IsEnabled = false;
+                    chkMonitorChild.IsEnabled = false;
+                    mpbStatus.Visibility = Visibility.Visible;
+                    break;
+                case "停止监控":
+                    fileWatcher.EnableRaisingEvents = false;
+                    fileWatcher.Created -= FileWatcher_Created;
+                    fileWatcher.Deleted -= FileWatcher_Deleted;
+                    fileWatcher.Changed -= FileWatcher_Changed;
+                    fileWatcher.Renamed -= FileWatcher_Renamed;
+
+                    btnTask.Content = "开始监控";
+                    txtWebPath.IsEnabled = true;
+                    chkMonitorChild.IsEnabled = true;
+                    mpbStatus.Visibility = Visibility.Hidden;
+                    break;
+            }
         }
 
         // 行加载，根据文件动作设置字体颜色，并滚动到最底部
@@ -66,10 +108,10 @@ namespace WebMonitor
 
             if (item.Count > 0)
             {
-                switch ((WatcherChangeTypes)item.OperateType)
+                switch ((WatcherChangeTypes)item[0].OperateType)
                 {
                     case WatcherChangeTypes.Created:
-                        e.Row.Foreground= new SolidColorBrush(Colors.Green);
+                        e.Row.Foreground = new SolidColorBrush(Colors.Green);
                         break;
                     case WatcherChangeTypes.Deleted:
                         e.Row.Foreground = new SolidColorBrush(Colors.Red);
@@ -88,7 +130,8 @@ namespace WebMonitor
         // 清空列表
         private void miClear_Click(object sender, RoutedEventArgs e)
         {
-
+            dgMonitor.Items.Clear();
+            itemNo = 1;
         }
 
         #endregion
@@ -97,22 +140,25 @@ namespace WebMonitor
 
         private void Open_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
+            var items = dgMonitor.SelectedItems;
 
+            if (items.Count == 1)
+            {
+                e.CanExecute = true;
+                return;
+            }
+
+            e.CanExecute = false;
         }
 
-        private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
+        private async void Open_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            dynamic items = dgMonitor.SelectedItem;
 
-        }
-
-        private void Copy_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-
-        }
-
-        private void Copy_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-
+            if (items.Count == 1)
+            {
+                await OpenFileLocal(items[0].FilePath);
+            }
         }
 
         #endregion
@@ -124,7 +170,7 @@ namespace WebMonitor
             return Task.Factory.StartNew(() =>
             {
                 Thread.Sleep(100);
-                FileSystemWatcher fileWatcher = new FileSystemWatcher();
+
                 fileWatcher.Path = path;
                 fileWatcher.IncludeSubdirectories = isMonitorChild;
                 fileWatcher.EnableRaisingEvents = true;
@@ -215,6 +261,23 @@ namespace WebMonitor
                     default:
                         return "未知";
                 }
+            });
+        }
+
+        /// <summary>
+        /// 打开文件所在位置
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private Task OpenFileLocal(string path)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                Thread.Sleep(100);
+
+                ProcessStartInfo startInfo = new ProcessStartInfo("explorer");
+                startInfo.Arguments = string.Format("/e,/select,{0}", path);
+                Process.Start(startInfo);
             });
         }
 
