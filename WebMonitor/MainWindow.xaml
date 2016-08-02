@@ -1,0 +1,49 @@
+﻿<Controls:MetroWindow x:Class="WebMonitor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WebMonitor"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        mc:Ignorable="d"
+        Title="Web监控" Height="350" Width="600" GlowBrush="{DynamicResource AccentColorBrush}" WindowStartupLocation="CenterScreen">
+
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" CanExecute="Open_CanExecute" Executed="Open_Executed"/>
+        <CommandBinding Command="Copy" CanExecute="Copy_CanExecute" Executed="Copy_Executed"/>
+    </Window.CommandBindings>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="65"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="100"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="web目录：" VerticalContentAlignment="Center"/>
+        <TextBox Grid.Column="1" IsReadOnly="True" Name="txtWebPath" Controls:TextBoxHelper.Watermark="双击选择web目录" VerticalContentAlignment="Center" MouseDoubleClick="txtWebPath_MouseDoubleClick"/>
+        <CheckBox Grid.Column="2" Content="监控子目录" IsChecked="True" Margin="5"/>
+        <Button Grid.Column="3" Content="开始监控" Name="btnTask" Style="{DynamicResource AccentedSquareButtonStyle}" Click="btnTask_Click"/>
+        <DataGrid Grid.Row="1" Grid.ColumnSpan="4" Name="dgMonitor" IsReadOnly="True" AutoGenerateColumns="False" LoadingRow="dgMonitor_LoadingRow">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="序号" Binding="{Binding ItemNo}" Width="80"/>
+                <DataGridTextColumn Header="文件名" Binding="{Binding FileName}" Width="100"/>
+                <DataGridTextColumn Header="位置" Binding="{Binding FilePath}" Width="*"/>
+                <DataGridTextColumn Header="动作" Binding="{Binding Operate}" Width="60"/>
+                <DataGridTextColumn Header="日期" Binding="{Binding OperaDate}" Width="120"/>
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="打开所在位置" Command="Open"/>
+                    <MenuItem Header="复制" Command="Copy"/>
+                    <MenuItem Header="清空" Click="miClear_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+    </Grid>
+</Controls:MetroWindow>
