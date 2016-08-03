@@ -19,3 +19,4 @@ C:\Work\Github\WebMonitor\WebMonitor\obj\Debug\WebMonitor.csproj.GenerateResourc
 C:\Work\Github\WebMonitor\WebMonitor\obj\Debug\WebMonitor.exe
 C:\Work\Github\WebMonitor\WebMonitor\obj\Debug\WebMonitor.pdb
 C:\Work\Github\WebMonitor\WebMonitor\obj\Debug\App.baml
+C:\Work\Github\WebMonitor\WebMonitor\obj\Debug\WebMonitor.csprojResolveAssemblyReference.cache

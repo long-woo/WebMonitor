@@ -47,7 +47,7 @@
 
         <Controls:MetroProgressBar Grid.Row="2" Grid.ColumnSpan="4" Margin="0,-29,0,0" IsIndeterminate="True" Name="mpbStatus" Visibility="Hidden"/>
 
-        <StatusBar Grid.Row="2" Grid.ColumnSpan="4" Background="#eee">
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="4" Background="#eee" Name="statusChkItem">
             <StatusBarItem>
                 <CheckBox Content="创建" Foreground="Green"/>
             </StatusBarItem>

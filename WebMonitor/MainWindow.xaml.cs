@@ -39,6 +39,9 @@ namespace WebMonitor
             disTimer.Start();
         }
 
+        #region 事件
+
+        // 定时器事件
         private void DisTimer_Tick(object sender, EventArgs e)
         {
             totalSecond++;
@@ -48,8 +51,6 @@ namespace WebMonitor
                 second = (totalSecond % 3600) % 60;
             siMonitorTime.Text = string.Format("{0}小时{1}分钟{2}秒", hour, minute, second);
         }
-
-        #region 事件
 
         // 双击选择web目录
         private void txtWebPath_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -102,6 +103,7 @@ namespace WebMonitor
         }
 
         // 行加载，根据文件动作设置字体颜色，并滚动到最底部
+
         private void dgMonitor_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             dynamic item = e.Row.Item;
