@@ -49,16 +49,16 @@
 
         <StatusBar Grid.Row="2" Grid.ColumnSpan="4" Background="#eee" Name="statusChkItem">
             <StatusBarItem>
-                <CheckBox Content="创建" Foreground="Green"/>
+                <CheckBox Content="创建" Foreground="Green" IsChecked="True"/>
             </StatusBarItem>
             <StatusBarItem>
-                <CheckBox Content="修改" Foreground="Orange"/>
+                <CheckBox Content="修改" Foreground="Orange" IsChecked="True"/>
             </StatusBarItem>
             <StatusBarItem>
-                <CheckBox Content="删除" Foreground="Red"/>
+                <CheckBox Content="删除" Foreground="Red" IsChecked="True"/>
             </StatusBarItem>
             <StatusBarItem>
-                <CheckBox Content="重命名"/>
+                <CheckBox Content="重命名" IsChecked="True"/>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right" Foreground="BlueViolet">
                 <StackPanel Orientation="Horizontal">

@@ -1,6 +1,7 @@
 ﻿using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -225,17 +227,23 @@ namespace WebMonitor
                      newFileName = string.Format("{0}→{1}", oldFileName, newFileName);
                  }
 
-                 lstItem.Add(new
-                 {
-                     ItemNo = itemNo++,
-                     FileName = newFileName,
-                     FilePath = fileSystem.FullPath,
-                     OperateType = fileSystem.ChangeType,
-                     Operate = await GetOperateType(fileSystem.ChangeType),
-                     OperaDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-                 });
+                 string chkContent = await GetChkOperateItem(),
+                   OperateName = await GetOperateType(fileSystem.ChangeType);
 
-                 dgMonitor.Items.Add(lstItem);
+                 if (chkContent.Contains(OperateName))
+                 {
+                     lstItem.Add(new
+                     {
+                         ItemNo = itemNo++,
+                         FileName = newFileName,
+                         FilePath = fileSystem.FullPath,
+                         OperateType = fileSystem.ChangeType,
+                         Operate = OperateName,
+                         OperaDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                     });
+
+                     dgMonitor.Items.Add(lstItem);
+                 }
              });
         }
 
@@ -281,6 +289,36 @@ namespace WebMonitor
                 startInfo.Arguments = string.Format("/e,/select,{0}", path);
                 Process.Start(startInfo);
             });
+        }
+
+        /// <summary>
+        /// 获取选中的动作
+        /// </summary>
+        /// <returns></returns>
+        private async Task<string> GetChkOperateItem()
+        {
+            string chkContent = "";
+
+            foreach (StatusBarItem siItem in statusChkItem.Items)
+            {
+                await siItem.Dispatcher.InvokeAsync(() =>
+                {
+                    var childItem = siItem.Content;
+
+                    if (childItem is CheckBox)
+                    {
+                        CheckBox chkItem = childItem as CheckBox;
+
+                        if ((bool)chkItem.IsChecked)
+                        {
+                            chkContent += chkItem.Content;
+                        }
+                    }
+                });
+
+            }
+
+            return chkContent;
         }
 
         #endregion
