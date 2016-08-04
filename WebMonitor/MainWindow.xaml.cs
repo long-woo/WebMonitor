@@ -169,6 +169,12 @@ namespace WebMonitor
 
         #region 私有方法
 
+        /// <summary>
+        /// 注册文件监控事件
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="isMonitorChild"></param>
+        /// <returns></returns>
         private Task OperateMonitor(string path, bool isMonitorChild)
         {
             return Task.Factory.StartNew(() =>
@@ -230,7 +236,7 @@ namespace WebMonitor
                  string chkContent = await GetChkOperateItem(),
                    OperateName = await GetOperateType(fileSystem.ChangeType);
 
-                 if (chkContent.Contains(OperateName))
+                 if (chkContent.Contains(OperateName)) // 选中的动作
                  {
                      lstItem.Add(new
                      {
